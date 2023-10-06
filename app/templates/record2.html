@@ -44,6 +44,7 @@
         }
         .mobile-widget .playPauseAudio{
             text-align: center;
+            height: 100px;
         }
         .mobile-widget .playPauseAudio img{
             width: 40px;
@@ -95,12 +96,13 @@
                                             <button id="recordButton" onclick="startRecording()" ><img src="/static/img/Microphone.png"/></button>
                                             <button id="pauseButton" class="d-none" onclick="pauseRecording()" disabled>Pause</button>
                                             <button id="stopButton" class="d-none" onclick="stopRecording()" disabled><img src="/static/img/Pause.png"/></button>
-                                        </div>
-                                        <div id="replyAudio" class="d-none"></div>
-                                        <div class="playPauseAudio">
                                             <button id="pauseAudio" class="d-none" onclick="pauseAudio();" ><img src="/static/img/Pause.png"/></button>
                                             <button id="playAudio" class="d-none" onclick="playAudio();" ><img src="/static/img/Play.png"/></button>
                                         </div>
+                                        <div id="replyAudio" class="d-none"></div>
+                                        <!-- <div class="playPauseAudio">
+                                            
+                                        </div> -->
                                         <div>
                                             <p id="output" style="color: gray;"></p>
                                         </div>
