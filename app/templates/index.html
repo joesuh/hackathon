@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section id="about" class="about">
+        <div class="container">
+            <br>
+            {% if channels and channels|length >  0: %}
+                {% for channel in channels %}
+                    <div class="row no-gutters">
+                        <!-- <div class="col-xl-5 d-flex align-items-stretch justify-content-center justify-content-lg-start"> -->
+                        <div class="col-xl-4 d-flex align-items-stretch">
+                            <a href="{{ url_for('main.record', name=channel.channel_name) }}">
+                                <img style="width: 140px;margin-left: 60%;" src="{{ channel.channel_logo }}" alt="Cgannel logo">
+                            </a>
+                        </div>
+                        <div class="col-xl-8 ps-0 ps-lg-5 pe-lg-1 d-flex align-items-stretch">
+                        <div class="content d-flex flex-column justify-content-center">
+                            <h3><a href="{{ url_for('main.chat', name=channel.channel_name) }}">{{ channel.channel_title }} ({{ channel.channel_name }})</a></h3>
+                            <p>{{ channel.channel_description }}</p>
+                            <div class="row">
+                                <div class="col-md-6 d-md-flex align-items-md-stretch">
+                                    <div class="count-box">
+                                        <p><strong>Channel Link:</strong> <a href="{{ channel.link }}">YouTube Link</a> </p>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-md-6 d-md-flex align-items-md-stretch">
+                                    <div class="count-box">
+                                        <p><strong>Channel Videos: </strong> {{ channel.videos_count }}</p>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

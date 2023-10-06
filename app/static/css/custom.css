@@ -1,0 +1,14 @@
+
+.no-gutters{
+    border: 1px dotted darkgray;
+    padding: 30px;
+    margin-bottom: 10px;
+}
+
+.no-gutters img{
+    margin-left: 22%;
+}
+
+.hideit{
+    display: none !important;
+}

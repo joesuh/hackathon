@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="chat-area">
+                {% if channel and channel|length >  0: %}
+                    <div class="chatbox">
+                        <div class="modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="msg-head">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0">
+                                                    <img class="img-fluid chat-image" src="{{ channel.channel_logo }}" alt="Channel Banner">
+                                                </div>
+                                                <div class="flex-grow-1 ms-3">
+                                                    <h3> &nbsp;&nbsp;{{ channel.channel_title }}</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal-body">
+                                    <div class="msg-body">
+                                        <ul id="qa">
+                                            <li class="sender">
+                                                <p> Hi, I’m {{ channel.channel_title }} AI. How can I help you?</p>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="send-box">
+                                    <div class="send-btns pre-questions">
+                                        {% for pre in preQuestions %}
+                                            <div class="button-wrapper">
+                                                <span class="label pre-que">{{ pre.question }}</span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="form">
+                                        <input type="text" class="form-control" name="question" id="question" aria-label="message…" placeholder="Ask a question">
+                                        <button type="button" id="get_answer_btn"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <br><br>
+                    <h3 style="text-align: center;">
+                        <a href="{{ url_for('main.index') }}">The channel has not loaded completely. Please try again.</a>
+                    </h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var typed;
+        $(document).ready(function () {
+            
+
+            $(".pre-que").click(function(){
+                var preQuestionText = $(this).text();
+                $("#question").val(preQuestionText);
+                $('#get_answer_btn').click();
+                $(this).parent().remove();
+            });
+
+            $("#get_answer_btn").click(function () {
+                var question = $("#question").val();
+                var channelName = '{{ channel.channel_name }}';
+                if (question != ''){
+                    // $("#loading_icon").show();
+                    addQuestionAnswer(question, 'question','0');
+                    let csrf_token = "{{ csrf_token() }}";
+                    $('.pre-questions').hide();
+                    $('.send-box .form').hide();
+                    var liveURL = '{{ liveURL }}/get_channel_answers';
+                    $.ajax({
+                        type: "POST",
+                        url: liveURL,
+                        data: JSON.stringify({ question: question, name:channelName}),
+                        contentType: "application/json",
+                        headers: {
+                            "X-CSRFToken": csrf_token,
+                        },
+                        success: function (response) {
+                            console.log('get_answer_btn response = ', response)
+                            audio = '';
+                            if (response.audio && response.audio != ''){
+                                setTimeout(function() {
+                                    addAudio(response.audio, response.q)
+                                }, 2000);
+                            }else{
+                                getAnswerAudio(response.answer, response.q, response.cid )
+                            }
+                            addQuestionAnswer(response.answer, 'answer','0', response.q);
+                            if(response.counter != undefined && response.counter != 'NA')
+                            {
+                                if($('.messages-credit-counter') .length > 0){
+
+                                $('.messages-credit-counter').html(response.counter)
+                                    if(response.counter <= 0 ){
+                                        $('.pre-questions').remove();
+                                        $('.send-box .form').remove();
+                                        let upHTML = '';
+                                        if(upgrade)
+                                        {
+                                            upHTML = '(<a href="javascript:void(0);" class="upgrade">upgrade</a> )';
+                                        }
+                                        $('.messages-credit').html('<span class="messages-credit-counter">0</span> questions left until {{nextMonthName}} 1st '+upHTML);
+
+                                    }
+                                }
+                            }
+                            // $("#loading_icon").hide(); 
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            // $("#loading_icon").hide();
+                            addAILoader('remove');
+                            alert("Error: " + errorThrown + ", " + textStatus + ", " + jqXHR.responseText);
+                            $('.pre-questions').show();
+                            $('.send-box .form').show();
+                        }
+                    });
+                }else{
+                    alert('Please Add Question');
+                }
+            });
+        });
+
+        function getAnswerAudio(answer, questionId, channelId){
+            let csrf_token = "{{ csrf_token() }}";
+            var VideoSavedId = '{{ id }}';
+            
+            var liveURL = '{{ liveURL }}/video/answer_voice';
+            $.ajax({
+                type: "POST",
+                url: liveURL,
+                data: JSON.stringify({ answer: answer, questionId:questionId, channelId:channelId}),
+                contentType: "application/json",
+                headers: {
+                    "X-CSRFToken": csrf_token,
+                },
+                success: function (response) {
+                    addAudio(response.audio, questionId)
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    
+                }
+            });
+        }
+        function addAudio(audio, questionId){
+            console.log('YES THEREEEEE')
+            var newID = 'audio_'+questionId;
+            var questionTagId = 'question_'+questionId;
+            if(audio != undefined && audio != ''){
+                var audioFilePath = '{{ liveURL }}/static/transcripts/answers/'+audio
+                var playAudio = '<audio id="'+newID+'"><source src="'+audioFilePath+'" type="audio/mpeg"></audio> \
+                <p class="label label-info" onclick="playAudio('+questionId+');" id="play_'+newID+'">Play</p> \
+                <p class="label label-info hideit" onclick="pauseAudio('+questionId+');" id="pause_'+newID+'">Pause</p> \
+                ';
+                $('#'+questionTagId).append(playAudio);
+                // $('audio#'+newID)[0].play();
+
+                // $("#play_"+newID).click(function(){
+                //     $('audio#'+newID)[0].play();
+                // });
+            }
+        }
+
+        function playAudio(aId){
+            $('audio#audio_'+aId)[0].play();
+            $('#play_audio_'+aId).addClass('hideit');
+            $('#pause_audio_'+aId).removeClass('hideit');
+        }
+        function pauseAudio(aId){
+            $('audio#audio_'+aId)[0].pause();
+            $('#pause_audio_'+aId).addClass('hideit');
+            $('#play_audio_'+aId).removeClass('hideit');
+        }
+
+        function addQuestionAnswer(text, type,qId, audioID = ''){
+            let questionVal = $('#question').val();
+            if(type == 'answer'){
+                $('#question').val('');
+            }
+            addClass = 'sender';
+            if (type == 'question'){
+                addClass = 'repaly';
+            }
+            var numItems = $('.'+addClass).length;
+            var newIDForReply = addClass+'-'+numItems;
+            var thumbs_html = '';
+            var setQuestionId = '';
+            if(qId != '0'){
+                thumbs_html += '<span class="thumbs-up-down">';
+                thumbs_html += '<a title="Copy" class="copy-icon copy-ans" onclick="javascript:void(0);" copy="'+newIDForReply+'"><img src="/static/images/copy.png"/></a>';
+                thumbs_html += '<a href="javascript:void(0);" q="'+qId+'" class="thumbs-icon thumbs-up"></a>';
+                thumbs_html += '<a href="javascript:void(0);" q="'+qId+'" class="thumbs-icon thumbs-down"></a>';
+                thumbs_html += '</span>';
+                setQuestionId = 'question_'+qId
+            }
+            if(audioID && audioID != ''){
+                setQuestionId = 'question_'+audioID;
+            }
+
+            if (addClass == 'sender'){
+                if(questionVal == 'Transcript'){
+                    var newHtml = '<li class="'+addClass+'" id="'+setQuestionId+'"><p id="'+newIDForReply+'">'+text+thumbs_html+'</p></li>';
+                    $('#qa').append(newHtml);
+                    $('.modal-body').scrollTop($('#qa').height() - 100);
+                    $('.pre-questions').show();
+                    $('.send-box .form').show();
+                    if(thumbs_html != ''){
+                        $('.copy-ans').tooltip();
+                    }
+                }
+                else{
+                    $('.pre-questions').hide();
+                    $('.send-box .form').hide();
+                    $('.stop-generating-wrapper').show();
+                    var newHtml = '<li class="'+addClass+'" id="'+setQuestionId+'"><p id="'+newIDForReply+'"></p></li>';
+                    $('#qa').append(newHtml);
+                    var brExp = /<br\s*\/?>/i;
+                    var lines = (text).split(brExp);
+                    typed = new Typed("#"+newIDForReply, {
+                        // strings: lines,
+                        strings: [text],
+                        showCursor: false,
+                        typeSpeed: 0,
+                        backSpeed: 0,
+                        loop: false,
+                        onComplete: function onComplete(self) {
+                            //$('.modal-body').animate({scrollTop: $('.modal-body')[0].scrollHeight}, "slow");
+                            $('.stop-generating-wrapper').hide();
+                            $('.pre-questions').show();
+                            $('.send-box .form').show();
+                            $("#"+newIDForReply).append(thumbs_html);
+                            if(thumbs_html != ''){
+                                $('.copy-ans').tooltip();
+                            }
+                            $('.modal-body').scrollTop($('#qa').height() - 100);
+                            clearInterval(scrollInterval);
+                        },
+                        preStringTyped: function() {
+                            scrollInterval = setInterval(() => {
+                                $('.modal-body').scrollTop($('#qa').height() - 100);
+                            });
+                        },
+                    });
+                }
+            }else{
+                var newHtml = '<li class="'+addClass+'"><p id="'+newIDForReply+'">'+text+'</p></li>';
+                $('#qa').append(newHtml);
+            }
+            if (type == 'question'){
+                addAILoader('add')
+            }else{
+                addAILoader('remove')
+            }
+            $("#qa").animate({ scrollTop: $('#qa').prop("scrollHeight")}, 1000);
+        }
+
+        function addAILoader(type){
+            var loader = '/static/img/loader.gif';
+            if (type == 'add'){
+                var newHtml = '<li class="sender loader"><p><img src="'+loader+'" alt="avatar 1" classa="flip-image" style="width: 45px; border-radius: 50%; -webkit-transform: scaleX(-1);transform: scaleX(-1);"></p></li>';
+                $('#qa').append(newHtml);
+                $("#qa").animate({ scrollTop: $('#qa').prop("scrollHeight")}, 1000);
+            }else{
+                $('li.loader').remove();
+            }
+        }
+
+    </script>
+{% endblock %}

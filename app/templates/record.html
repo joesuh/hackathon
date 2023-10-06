@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <script>
+        let LiveURL = "{{ liveURL }}";
+    </script>
+    <script src="/static/js/app.js"></script>
+    <style>
+        body{
+            background: #000;
+        }
+        .logo {
+            width: 100%;
+            text-align: center;
+        }
+        .logo a{
+            color: #fff;
+            font-weight: bold;
+        }
+        .mobile-widget{
+            background: #000;
+        }
+        .mobile-widget .modal-content{
+            background: #000;
+        }
+        .mobile-widget .msg-head{
+            display: none;
+        }
+        .mobile-widget .msg-body{
+            display: none;
+        }
+        .mobile-widget .send-btns{
+            display: none;
+        }
+        .mobile-widget .send-box .form{
+            display: none;
+        }
+        .mobile-widget .record {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .mobile-widget .record img{
+            width: 40px;
+        }
+        .mobile-widget .processing-icons {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            background-size: 300px !important;
+            background-position: center center !important;
+        }
+        .mobile-widget .processing-icons img {
+            width: 300px;
+        }
+        .mobile-widget .processing-icons.thinking {
+            background: url(/static/img/Thinking.gif) no-repeat;
+        }
+        .mobile-widget .processing-icons.listening {
+            background: url(/static/img/Listening.gif) no-repeat;
+        }
+        .mobile-widget .processing-icons.speaking {
+            background: url(/static/img/Speaking.gif) no-repeat;
+        }
+        .mobile-widget .chat-area{
+            background-color: #000;
+        }
+    </style>
+    <!-- <div id="analyser"></div> -->
+    <div class="row mobile-widget">
+        <div class="col-12">
+            <div class="chat-area">
+                <div class="chatbox">
+                    <div class="modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="processing-icons"></div>
+                            </div>
+                            <div class="send-box">
+                                <div class="record-btns">
+
+                                    <!-- <div id="controls">
+                                        <button id="recordButton" onclick="startRecording()" >Record</button>
+                                        <button id="pauseButton" onclick="pauseRecording()" disabled>Pause</button>
+                                        <button id="stopButton" onclick="stopRecording()" disabled>Stop</button>
+                                     </div> -->
+
+
+                                    <div class="record">
+                                        <!-- <button id="recordButton" class="btn btn-success"><img src="/static/img/record-icon.png"/></button>
+                                        <button id="stopButton" class="btn btn-danger"><img src="/static/img/video-pause-button.png"/></button> -->
+                                        <!-- <button  disabled><img src="/static/img/record-icon.png"/></button>
+                                        <button id="stopButton" onclick="stopRecording()" disabled><img src="/static/img/video-pause-button.png"/></button> -->
+
+                                        <button id="recordButton" onclick="startRecording()" ><img src="/static/img/record-icon.png"/></button>
+                                        <button id="pauseButton" class="d-none" onclick="pauseRecording()" disabled>Pause</button>
+                                        <button id="stopButton" class="d-none" onclick="stopRecording()" disabled><img src="/static/img/video-pause-button.png"/></button>
+
+                                        <!-- <a href="javascript:void(0);" id="recordButton" onclick="startRecording()"><img src="/static/img/record-icon.png"/></a>
+                                        <a href="javascript:void(0);" id="stopButton" onclick="stopRecording()" disabled><img src="/static/img/video-pause-button.png"/></a> -->
+                                    
+                                    </div>
+                                    <div id="replyAudio" class="d-none"></div>
+                                    <div>
+                                        <p id="output" style="color: gray;"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+    </script>
+{% endblock %}
