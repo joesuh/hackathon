@@ -919,3 +919,7 @@ hr{
     margin-bottom: 0px;
     line-height: 30px;
 }
+
+.chat-area .modal-dialog-scrollable{
+    overflow-y: hidden;
+}
