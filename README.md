@@ -1,3 +1,2 @@
 # hackathon
-python3 -m venv env
-pip install -r requirements.txt
+AI voice chatbot for pastors
