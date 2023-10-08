@@ -14,22 +14,32 @@
                             </a>
                         </div>
                         <div class="col-xl-8 ps-0 ps-lg-5 pe-lg-1 d-flex align-items-stretch">
-                        <div class="content d-flex flex-column justify-content-center">
-                            <h3><a href="{{ url_for('main.chat', name=channel.channel_name) }}">{{ channel.channel_title }} ({{ channel.channel_name }})</a></h3>
-                            <p>{{ channel.channel_description }}</p>
-                            <div class="row">
-                                <div class="col-md-6 d-md-flex align-items-md-stretch">
-                                    <div class="count-box">
-                                        <p><strong>Channel Link:</strong> <a href="{{ channel.link }}">YouTube Link</a> </p>
+                            <div class="content d-flex flex-column justify-content-center">
+                                <h3><a href="{{ url_for('main.chat', name=channel.channel_name) }}">{{ channel.channel_title }} ({{ channel.channel_name }})</a></h3>
+                                <p>{{ channel.channel_description }}</p>
+                                <div class="row">
+                                    <div class="col-md-6 d-md-flex align-items-md-stretch">
+                                        <div class="count-box">
+                                            <p><strong>Channel Link:</strong> <a href="{{ channel.link }}">YouTube Link</a> </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 d-md-flex align-items-md-stretch">
+                                        <div class="count-box">
+                                            <p><strong>Version 1:</strong> <a href="{{ url_for('main.record', name=channel.channel_name) }}">Version 1</a> </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 d-md-flex align-items-md-stretch">
+                                        <div class="count-box">
+                                            <p><strong>Version 2:</strong> <a href="{{ url_for('main.record2', name=channel.channel_name) }}">Version 2</a> </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 d-md-flex align-items-md-stretch">
+                                        <div class="count-box">
+                                            <p><strong>Version 3:</strong> <a href="{{ url_for('main.record3', name=channel.channel_name) }}">Version 3</a> </p>
+                                        </div>
                                     </div>
                                 </div>
-                                <!-- <div class="col-md-6 d-md-flex align-items-md-stretch">
-                                    <div class="count-box">
-                                        <p><strong>Channel Videos: </strong> {{ channel.videos_count }}</p>
-                                    </div>
-                                </div> -->
                             </div>
-                        </div>
                         </div>
                     </div>
                 {% endfor %}

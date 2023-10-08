@@ -92,6 +92,12 @@ def record2(name):
     liveURL = Config.LIVE_DOMAIN
     return render_template('record2.html', liveURL = liveURL, newPage=newPage)
 
+@bp.route('/record3/<name>')
+def record3(name):
+    newPage = True
+    liveURL = Config.LIVE_DOMAIN
+    return render_template('record3.html', liveURL = liveURL, newPage=newPage)
+
 @bp.route('/audio', methods=['POST'])
 def audio():
     # print('*****************************************')

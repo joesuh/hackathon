@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <script>
+        let LiveURL = "{{ liveURL }}";
+    </script>
+    <script src="/static/js/app3.js"></script>
+    <style>
+        body{
+            background: #000;
+        }
+        .logo {
+            width: 100%;
+            text-align: center;
+        }
+        .logo a{
+            color: #fff;
+            font-weight: bold;
+        }
+        .mobile-widget{
+            background: #000;
+        }
+        .mobile-widget .modal-content{
+            background: #000;
+        }
+        .mobile-widget .msg-head{
+            display: none;
+        }
+        .mobile-widget .msg-body{
+            display: none;
+        }
+        .mobile-widget .send-btns{
+            display: none;
+        }
+        .mobile-widget .send-box .form{
+            display: none;
+        }
+        .mobile-widget .record {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .mobile-widget .record img{
+            width: 40px;
+        }
+        .mobile-widget .playPauseAudio{
+            text-align: center;
+            height: 100px;
+        }
+        .mobile-widget .playPauseAudio img{
+            width: 40px;
+        }
+        .mobile-widget .processing-icons {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            background-size: 300px !important;
+            background-position: center center !important;
+        }
+        .mobile-widget .processing-icons img {
+            width: 300px;
+        }
+        .mobile-widget .processing-icons.thinking {
+            background: url(/static/img/Thinking.gif) no-repeat;
+        }
+        .mobile-widget .processing-icons.listening {
+            background: url(/static/img/Listening.gif) no-repeat;
+        }
+        .mobile-widget .processing-icons.speaking {
+            background: url(/static/img/Speaking.gif) no-repeat;
+        }
+        .mobile-widget .chat-area{
+            background-color: #000;
+        }
+        .record-btns button{
+            padding: 0px;
+            border: none;
+        }
+    </style>
+    <!-- <div id="analyser"></div> -->
+    <div class="row mobile-widget">
+        <div class="col-12">
+            <div class="chat-area">
+                <div class="chatbox">
+                    <div class="modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="processing-icons"></div>
+                            </div>
+                            {% if newPage: %}
+                                <div>
+                            {% else %}
+                                <div class="send-box">
+                            {% endif %}
+                                    <div class="record-btns">
+                                        <div class="record" style="height: 100px;">
+                                            <button id="recordButton" onclick="startRecording()" ><img src="/static/img/Microphone.png"/></button>
+                                            <button id="pauseButton" class="d-none" onclick="pauseRecording()" disabled>Pause</button>
+                                            <button id="stopButton" class="d-none" onclick="stopRecording()" disabled><img src="/static/img/Pause.png"/></button>
+                                            <button id="pauseAudio" class="d-none" onclick="pauseAudio();" ><img src="/static/img/Pause.png"/></button>
+                                            <button id="playAudio" class="d-none" onclick="playAudio();" ><img src="/static/img/Play.png"/></button>
+                                        </div>
+                                        <div id="replyAudio" class="d-none"></div>
+                                        <!-- <div class="playPauseAudio">
+                                            
+                                        </div> -->
+                                        <div>
+                                            <p id="output" style="color: gray;"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+    </script>
+{% endblock %}
