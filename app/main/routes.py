@@ -48,6 +48,12 @@ def getChannelDetails(channelName):
 
 @bp.route('/')
 def index():
+    newPage = True
+    liveURL = Config.LIVE_DOMAIN
+    return render_template('record3.html', liveURL = liveURL, newPage=newPage)
+
+@bp.route('/home')
+def home():
     data = getChannelsList()
     channelsList = []
     if data['status']:
